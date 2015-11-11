@@ -17,9 +17,13 @@ decodeModified ((Single a):xs) = a:decodeModified xs
 decodeModified ((Multiple n a):xs) = (replicate n a) ++ decodeModified xs
 
 -- Problem 13
-encodeDirect :: [t] -> [Frequency t]
+encodeDirect :: Eq t => [t] -> [Frequency t]
 encodeDirect [] = []
-encodeDirect x = error "TODO"
+encodeDirect x = foldr add [] x
+                 where add x [] = [Single x]
+                       add x (y:ys) = case y of
+                         Single a     -> if x == a then (Multiple 2 a):ys     else (Single x):y:ys
+                         Multiple n a -> if x == a then (Multiple (n+1) a):ys else (Single x):y:ys
 
 -- Problem 14
 dupli :: [t] -> [t]
